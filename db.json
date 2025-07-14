@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "id": "admin001",
+      "fname": "Admin",
+      "lname": "",
+      "email": "admin@navadhiti.com",
+      "password": "admin123",
+      "role": "Admin",
+      "userType": "admin"
+    },
+    {
+      "id": "emp002",
+      "empId": "EMP1002",
+      "fname": "Bhavani",
+      "lname": "M",
+      "email": "bhavani@navadhiti.com",
+      "password": "pass1234",
+      "designation": "Testing",
+      "dob": "2002-02-08",
+      "age": "23",
+      "onboardedOn": "2025-07-14",
+      "userType": "employee",
+      "role": "HR"
+    },
+    {
+      "id": "9a06",
+      "empId": "EMP4699",
+      "fname": "sudeesh",
+      "lname": "P",
+      "dob": "2001-08-08",
+      "age": "24",
+      "designation": "Development",
+      "email": "sudeesh@navadhiti.com",
+      "password": "dm9zom5b",
+      "onboardedOn": "2025-07-14",
+      "userType": "employee"
+    }
+  ]
+}
