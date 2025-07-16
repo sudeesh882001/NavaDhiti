@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Navadhiti</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <link rel="stylesheet" href="styles/base.css" />
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #4F5B60;
+    }
+    .navbar {
+      background-color: white;
+      padding: 10px 40px;
+      border-bottom: 1px solid #eee;
+    }
+    .navbar img {
+      height: 60px;
+    }
+    .dashboard {
+      display: flex;
+      height: calc(100vh - 80px);
+    }
+    .sidebar {
+      width: 250px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+    }
+    .sidebar h5 {
+      margin-bottom: 20px;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 10px 0;
+      width: 100%;
+      color: #4F5B60;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .sidebar button:hover {
+      color: #BECE20;
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+    .btn-primary {
+      background-color: #BECE20;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #aebd1c;
+    }
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+    .toast {
+      background-color: #BECE20;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+     @media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .main-content {
+    width: 100% !important;
+    padding: 20px !important;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .sidebar button {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 15px !important;
+  }
+
+  .sidebar h5 {
+    text-align: center;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <nav class="navbar d-flex justify-content-between align-items-center">
+  <img src="https://www.navadhiti.com/static/logo-3cdf1dd56e7f958a1df40935db67c424.svg" alt="Navadhiti Logo" />
+  <button id="logoutBtn" class="btn btn-primary">Logout</button>
+</nav>
+
+
+  <div class="toast-container">
+    <div id="formToast" class="toast"></div>
+  </div>
+
+<div class="dashboard flex-wrap d-flex">
+    <div class="sidebar">
+      <h5>Dashboard</h5>
+      <button onclick="showSection('userInfo')">User Info</button>
+      <div id="onboardBtnContainer"></div>
+    </div>
+
+    <div class="main-content">
+      <div id="userInfoSection" style="display: none;">
+        <h4>Search Employees</h4>
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search by name, ID, role, or designation" />
+        <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Role</th><th>Designation</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
+      </div>
+
+      <div id="onboardSection" style="display: none;">
+        <h4>Onboard New Employee</h4>
+        <form id="onboardForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <input type="text" id="fname" class="form-control" placeholder="First Name" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <input type="text" id="lname" class="form-control" placeholder="Last Name" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <input type="email" id="personal_mail" class="form-control" placeholder="Personal Email" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <input type="date" id="dob" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <select id="roleId" class="form-control" required>
+                <option value="">Select Role</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <select id="designationId" class="form-control" required>
+                <option value="">Select Designation</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Onboard</button>
+        </form>
+        <div class="table-responsive">
+        <table class="table table-bordered mt-4">
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Role</th><th>Designation</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="onboardTableBody"></tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+  emailjs.init("FZQfapcBsZj50tYjj");
+  const secretKey = "navadhiti_secret_key";
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (!loggedInUser) window.location.href = "login.html";
+
+  const rolesList = [
+    { id: "r1", name: "Superadmin" },
+    { id: "r2", name: "Admin" },
+    { id: "r3", name: "Employee" }
+  ];
+
+  const designationsList = [
+    { id: "d1", roleId: "r1", title: "CEO" },
+    { id: "d2", roleId: "r1", title: "CFO" },
+    { id: "d3", roleId: "r1", title: "CTO" },
+    { id: "d4", roleId: "r2", title: "Administrator" },
+    { id: "d5", roleId: "r2", title: "Analyst" },
+    { id: "d6", roleId: "r2", title: "Operations Lead" },
+    { id: "d7", roleId: "r3", title: "Developer" },
+    { id: "d8", roleId: "r3", title: "Tester" },
+    { id: "d9", roleId: "r3", title: "UI/UX Designer" }
+  ];
+
+  const roles = Object.fromEntries(rolesList.map(r => [r.id, r.name]));
+  const designations = Object.fromEntries(designationsList.map(d => [d.id, d.title]));
+
+  const roleSelect = document.getElementById("roleId");
+  const desigSelect = document.getElementById("designationId");
+
+  rolesList.forEach(r => {
+    roleSelect.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+  });
+
+  roleSelect.addEventListener("change", () => {
+    const selectedRole = roleSelect.value;
+    desigSelect.innerHTML = '<option value="">Select Designation</option>';
+    designationsList.filter(d => d.roleId === selectedRole).forEach(d => {
+      desigSelect.innerHTML += `<option value="${d.id}">${d.title}</option>`;
+    });
+  });
+
+  function showToast(message) {
+    const toast = document.getElementById("formToast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2000);
+  }
+
+  function showSection(sectionId) {
+    document.getElementById("userInfoSection").style.display = sectionId === 'userInfo' ? 'block' : 'none';
+    document.getElementById("onboardSection").style.display = sectionId === 'onboard' ? 'block' : 'none';
+  }
+
+  async function fetchAndDisplayUsers() {
+    const res = await axios.get("http://localhost:3000/users");
+    const users = res.data;
+
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = users.filter(u =>
+      u.empId?.toLowerCase().includes(query) ||
+      u.fname.toLowerCase().includes(query) ||
+      u.roleId.toLowerCase().includes(query) ||
+      u.designationId.toLowerCase().includes(query)
+    );
+
+    document.getElementById("userTableBody").innerHTML = filtered.map(u => `
+      <tr>
+        <td>${u.empId}</td>
+        <td>${u.fname} ${u.lname}</td>
+        <td>${roles[u.roleId]}</td>
+        <td>${designations[u.designationId]}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("onboardTableBody").innerHTML = users.map(u => `
+      <tr>
+        <td>${u.fname} ${u.lname}</td>
+        <td>${u.official_email}</td>
+        <td>${roles[u.roleId]}</td>
+        <td>${designations[u.designationId]}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" onclick="editUser('${u.id}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Delete</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  document.getElementById("searchInput").addEventListener("input", fetchAndDisplayUsers);
+
+  const onboardContainer = document.getElementById("onboardBtnContainer");
+  if (loggedInUser.roleId === "r1" || loggedInUser.roleId === "r2") {
+    onboardContainer.innerHTML = '<button onclick="showSection(\'onboard\')">Onboard User</button>';
+  }
+
+  // Mode variables
+  let isEditMode = false;
+  let editingUserId = null;
+
+  document.getElementById("onboardForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const fname = document.getElementById("fname").value.trim();
+    const lname = document.getElementById("lname").value.trim();
+    const personal_mail = document.getElementById("personal_mail").value.trim();
+    const dob = document.getElementById("dob").value;
+    const roleId = document.getElementById("roleId").value;
+    const designationId = document.getElementById("designationId").value;
+
+    if (isEditMode && editingUserId) {
+      await axios.patch(`http://localhost:3000/users/${editingUserId}`, {
+        fname,
+        lname,
+        personal_mail,
+        dob,
+        roleId,
+        designationId
+      });
+
+      showToast("User updated successfully");
+      isEditMode = false;
+      editingUserId = null;
+
+    } else {
+      const official_email = `${fname.toLowerCase()}@navadhiti.com`;
+      const passwordPlain = `Nav${Math.floor(1000 + Math.random() * 9000)}`;
+      const passwordEncrypted = CryptoJS.AES.encrypt(passwordPlain, secretKey).toString();
+
+      const newUser = {
+        fname,
+        lname,
+        personal_mail,
+        official_email,
+        password: passwordEncrypted,
+        dob,
+        roleId,
+        designationId,
+        empId: ""
+      };
+
+      await axios.post("http://localhost:3000/users", newUser);
+      await emailjs.send("service_gqmehuj", "template_59dimuo", {
+        to_name: fname,
+        to_email: personal_mail,
+        email: official_email,
+        password: passwordPlain
+      });
+
+      showToast(`User onboarded and credentials sent to ${personal_mail}`);
+    }
+
+    e.target.reset();
+    fetchAndDisplayUsers();
+  });
+
+  async function editUser(id) {
+    const res = await axios.get(`http://localhost:3000/users/${id}`);
+    const u = res.data;
+
+    document.getElementById("fname").value = u.fname;
+    document.getElementById("lname").value = u.lname;
+    document.getElementById("personal_mail").value = u.personal_mail;
+    document.getElementById("dob").value = u.dob;
+    document.getElementById("roleId").value = u.roleId;
+    roleSelect.dispatchEvent(new Event("change"));
+    document.getElementById("designationId").value = u.designationId;
+
+    isEditMode = true;
+    editingUserId = id;
+
+    showSection('onboard');  // Optional: Switch view
+  }
+
+  async function deleteUser(id) {
+    if (confirm("Are you sure you want to delete this user?")) {
+      await axios.delete(`http://localhost:3000/users/${id}`);
+      showToast("User deleted successfully");
+      fetchAndDisplayUsers();
+    }
+  }
+
+  showSection("userInfo");
+  fetchAndDisplayUsers();
+
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "index.html";
+});
+
+</script>
+
+</body>
+</html>

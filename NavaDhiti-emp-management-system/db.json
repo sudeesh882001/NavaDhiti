@@ -1,0 +1,87 @@
+{
+  "users": [],
+  "roles": [
+    {
+      "id": "r1",
+      "name": "superadmin"
+    },
+    {
+      "id": "r2",
+      "name": "admin"
+    },
+    {
+      "id": "r3",
+      "name": "employee"
+    }
+  ],
+  "designations": [
+    {
+      "id": "d1",
+      "roleId": "r1",
+      "title": "CEO"
+    },
+    {
+      "id": "d2",
+      "roleId": "r1",
+      "title": "CFO"
+    },
+    {
+      "id": "d3",
+      "roleId": "r1",
+      "title": "CTO"
+    },
+    {
+      "id": "d4",
+      "roleId": "r2",
+      "title": "Administrator"
+    },
+    {
+      "id": "d5",
+      "roleId": "r2",
+      "title": "Analyst"
+    },
+    {
+      "id": "d6",
+      "roleId": "r2",
+      "title": "Operations Lead"
+    },
+    {
+      "id": "d7",
+      "roleId": "r3",
+      "title": "Developer"
+    },
+    {
+      "id": "d8",
+      "roleId": "r3",
+      "title": "Tester"
+    },
+    {
+      "id": "d9",
+      "roleId": "r3",
+      "title": "UI/UX Designer"
+    }
+  ],
+  "permissions": [
+    {
+      "roleId": "r1",
+      "canAddSuperadmin": true,
+      "canAddAdmin": true,
+      "canAddEmployee": true,
+      "crud": true
+    },
+    {
+      "roleId": "r2",
+      "canAddSuperadmin": false,
+      "canAddAdmin": true,
+      "canAddEmployee": true,
+      "crud": true
+    },
+    {
+      "roleId": "r3",
+      "canAddSuperadmin": false,
+      "canAddAdmin": false,
+      "canAddEmployee": false,
+      "crud": false
+    }
+  ]
+}
