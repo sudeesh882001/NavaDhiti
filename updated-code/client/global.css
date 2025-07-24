@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * DevHub Q&A Platform - Modern Design System
+   * HSL color values for modern, professional Q&A platform
+  */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Modern blue primary - professional and trustworthy */
+    --primary: 217 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 15%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 210 40% 96%;
+    --accent-foreground: 215 25% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Success color for upvotes and positive actions */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning color for downvotes and caution */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 89% 53%;
+
+    --radius: 0.75rem;
+
+    /* Question status colors */
+    --answered: 142 76% 36%;
+    --unanswered: 215 16% 47%;
+    --accepted: 142 76% 36%;
+  }
+
+  .dark {
+    --background: 215 28% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 215 28% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 215 28% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 28% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 28% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 215 28% 12%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 215 28% 18%;
+    --input: 215 28% 18%;
+    --ring: 217 89% 53%;
+
+    --answered: 142 76% 36%;
+    --unanswered: 215 20% 65%;
+    --accepted: 142 76% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+
+  /* Smooth focus transitions */
+  .focus-ring {
+    @apply ring-2 ring-primary/20 border-primary;
+  }
+
+  /* Question card hover effect */
+  .question-card {
+    @apply transition-all duration-200 hover:shadow-md hover:border-primary/20;
+  }
+
+  /* Vote button styles */
+  .vote-button {
+    @apply transition-all duration-150 hover:scale-105 active:scale-95;
+  }
+
+  /* Tag styles */
+  .tag {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors;
+  }
+}
